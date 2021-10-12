@@ -92,12 +92,39 @@ def plot_review_length(dataset):
 
 def plot_review_popularity(dataset):
     """
-    Will have two trend lines: one for funny / helpful reviews.
-
     x - average number of react_type (funny, helpful) per game
     y - number of players
     """
-    pass
+    x_funny = []
+    x_helpful = []
+    y = []
+
+    for game in dataset.values():
+        num_reviews = len(game['reviews'])
+        num_funny = [review['funny'] for review in game['reviews']]
+        num_helpful = [review['helpful'] for review in game['reviews']]
+        # avg_num_funny = sum(num_funny) / num_reviews
+        # avg_num_helpful = sum(num_helpful) / num_reviews
+
+        # using only the top 5 reviews
+        num_funny.sort(reverse=True)
+        num_helpful.sort(reverse=True)
+        avg_num_funny = sum(num_funny[:5]) / 5
+        avg_num_helpful = sum(num_helpful[:5]) / 5
+
+        x_funny.append(avg_num_funny)
+        x_helpful.append(avg_num_helpful)
+        y.append(game['owners'])
+
+    plt.scatter(x_funny, y, label='funny', color='red')
+    plt.scatter(x_helpful,y , label='helpful', color='blue')
+    plt.ticklabel_format(style='plain')
+    plt.title('Average Game Top Review Popularity vs. Game Purchases')
+    # plt.xlabel('Average Review Reacts Per Game')
+    plt.xlabel('Average Top Review Reacts Per Game')
+    plt.ylabel('Estimated Number of Owners')
+    plt.legend()
+    plt.show()
 
 def plot_review_recommended(dataset):
     """
